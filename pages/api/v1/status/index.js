@@ -1,4 +1,4 @@
-import dabatabase from "../../../../infra/database.js";
+import dabatabase from "infra/database.js";
 
 async function status(request, response) {
   const result = await dabatabase.query("SELECT 1 + 1;");
