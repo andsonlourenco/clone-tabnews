@@ -1,10 +1,10 @@
-import orchestrator from "tests/orchestrator";
+import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("POST to /api/v1/status", () => {
+describe("POST /api/v1/status", () => {
   describe("Anonymous user", () => {
     test("Retrieving current system status", async () => {
       const response = await fetch("http://localhost:3000/api/v1/status", {
@@ -17,7 +17,7 @@ describe("POST to /api/v1/status", () => {
 
       expect(responseBody).toEqual({
         name: "MethodNotAllowedError",
-        message: "Métoddo não permitido para este endpoint.",
+        message: "Método não permitido para este endpoint.",
         action:
           "Verifique se o método HTTP enviado é válido para este endpoint.",
         status_code: 405,
