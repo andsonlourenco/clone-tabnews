@@ -1,7 +1,7 @@
 import { version as uuidVersion } from "uuid";
-import setCookieParser from "set-cookie-parser"
+import setCookieParser from "set-cookie-parser";
 import orchestrator from "tests/orchestrator";
-import session from "models/session.js"
+import session from "models/session.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -92,7 +92,7 @@ describe("POST /api/v1/sessions", () => {
 
     test("With correct `email` and correct `password`", async () => {
       const createdUser = await orchestrator.createUser({
-        email: 'tudo.corrreto@localhost.dev',
+        email: "tudo.corrreto@localhost.dev",
         password: "tudocorreto",
       });
 
@@ -102,7 +102,7 @@ describe("POST /api/v1/sessions", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: 'tudo.corrreto@localhost.dev',
+          email: "tudo.corrreto@localhost.dev",
           password: "tudocorreto",
         }),
       });
@@ -111,38 +111,38 @@ describe("POST /api/v1/sessions", () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-          id: responseBody.id,
-          token: responseBody.token,
-          user_id: createdUser.id,
-          expires_at: responseBody.expires_at,
-          created_at: responseBody.created_at,
-          updated_at: responseBody.updated_at,
+        id: responseBody.id,
+        token: responseBody.token,
+        user_id: createdUser.id,
+        expires_at: responseBody.expires_at,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
       });
 
-        expect(uuidVersion(responseBody.id)).toBe(4);
-        expect(Date.parse(responseBody.expires_at)).not.toBeNaN();
-        expect(Date.parse(responseBody.created_at)).not.toBeNaN();
-        expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.expires_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
-        const expiresAt = new Date(responseBody.expires_at);
-        const createdAt = new Date(responseBody.created_at);
+      const expiresAt = new Date(responseBody.expires_at);
+      const createdAt = new Date(responseBody.created_at);
 
-        expiresAt.setMilliseconds(0);
-        createdAt.setMilliseconds(0);
+      expiresAt.setMilliseconds(0);
+      createdAt.setMilliseconds(0);
 
-        expect(expiresAt - createdAt).toBe(session.EXPIRATION_IN_MILLISECONDS);
+      expect(expiresAt - createdAt).toBe(session.EXPIRATION_IN_MILLISECONDS);
 
-        const parsedSetCookie = setCookieParser(response, {
-            map: true,
-        });
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
 
-        expect(parsedSetCookie.session_id).toEqual({
-            name: "session_id",
-            value: responseBody.token,
-            maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-            path: "/",
-            httpOnly: true,
-        });
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: responseBody.token,
+        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+        path: "/",
+        httpOnly: true,
+      });
     });
   });
 });
